@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+import './registration_screen.dart';
 
 class AuthenticationScreen extends StatefulWidget {
   const AuthenticationScreen({Key? key}) : super(key: key);
@@ -18,6 +19,13 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
   final TextEditingController box2Controller = new TextEditingController();
   final TextEditingController box3Controller = new TextEditingController();
   final TextEditingController box4Controller = new TextEditingController();
+
+  // bool verify() {
+  //   print(emailAuth.validateOtp(
+  //       recipientMail: emailController.value.text,
+  //       userOtp: box1Controller.value.text));
+  // }
+
   @override
   Widget build(BuildContext context) {
     final box1Field = TextFormField(
@@ -77,98 +85,98 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
           child: SingleChildScrollView(
               child: Container(
                   child: Padding(
-                  padding: const EdgeInsets.all(36.0),
-                  child: Form(
-                      key: _formKey,
-                      child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
+            padding: const EdgeInsets.all(36.0),
+            child: Form(
+                key: _formKey,
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
                           children: <Widget>[
-                            Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: <Widget>[
-                                  Text(
-                                    "OTP",
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 36,
-                                      fontFamily: 'DMSans',
-                                      color: const Color(0xff053275),
-                                    ),
-                                  )
-                                ]),
-                            Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: <Widget>[
-                                  Text(
-                                    "Authentication",
-                                    softWrap: true,
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 36,
-                                      fontFamily: 'DMSans',
-                                      color: const Color(0xff053275),
-                                    ),
-                                  )
-                                ]),
-                            SizedBox(
-                              height: 45,
-                            ),
-                            Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: <Widget>[
-                                  Text(
-                                    "An authentication code has",
-                                    softWrap: true,
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 24,
-                                      fontFamily: 'DMSans',
-                                      color: const Color(0xff053275),
-                                    ),
-                                  )
-                                ]),
-                            Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: <Widget>[
-                                  Text(
-                                    "been send to your email",
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 24,
-                                      fontFamily: 'DMSans',
-                                      color: const Color(0xff053275),
-                                    ),
-                                  )
-                                ]),
-                            SizedBox(
-                              height: 107,
-                            ),
-                            box1Field,
-                            SizedBox(
-                              height: 90,
-                            ),
-                            loginButton,
-                            SizedBox(
-                              height: 55,
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                GestureDetector(
-                                    onTap: () {},
-                                    child: Text(
-                                      "Resend authentication code?",
-                                      style: TextStyle(
-                                        color: const Color(0xff053275),
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 18,
-                                      ),
-                                    ))
-                              ],
+                            Text(
+                              "OTP",
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 36,
+                                fontFamily: 'DMSans',
+                                color: const Color(0xff053275),
+                              ),
                             )
-                          ])),
-                    ))),
-                  ));
+                          ]),
+                      Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: <Widget>[
+                            Text(
+                              "Authentication",
+                              softWrap: true,
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 36,
+                                fontFamily: 'DMSans',
+                                color: const Color(0xff053275),
+                              ),
+                            )
+                          ]),
+                      SizedBox(
+                        height: 45,
+                      ),
+                      Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: <Widget>[
+                            Text(
+                              "An authentication code has",
+                              softWrap: true,
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 24,
+                                fontFamily: 'DMSans',
+                                color: const Color(0xff053275),
+                              ),
+                            )
+                          ]),
+                      Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: <Widget>[
+                            Text(
+                              "been send to your email",
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 24,
+                                fontFamily: 'DMSans',
+                                color: const Color(0xff053275),
+                              ),
+                            )
+                          ]),
+                      SizedBox(
+                        height: 107,
+                      ),
+                      box1Field,
+                      SizedBox(
+                        height: 90,
+                      ),
+                      loginButton,
+                      SizedBox(
+                        height: 55,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          GestureDetector(
+                              onTap: () {},
+                              child: Text(
+                                "Resend authentication code?",
+                                style: TextStyle(
+                                  color: const Color(0xff053275),
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18,
+                                ),
+                              ))
+                        ],
+                      )
+                    ])),
+          ))),
+        ));
   }
 }

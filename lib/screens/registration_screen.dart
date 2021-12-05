@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:email_auth/email_auth.dart';
+
+import './login_screen.dart';
+import './authentication_screen.dart';
 
 class RegistrationScreen extends StatefulWidget {
-  const RegistrationScreen({ Key? key }) : super(key: key);
+  const RegistrationScreen({Key? key}) : super(key: key);
 
   @override
   _RegistrationScreenState createState() => _RegistrationScreenState();
@@ -15,7 +19,17 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   final TextEditingController usernameController = new TextEditingController();
   final TextEditingController emailController = new TextEditingController();
   final TextEditingController passwordController = new TextEditingController();
-  final TextEditingController repasswordController = new TextEditingController();
+  final TextEditingController repasswordController =
+      new TextEditingController();
+
+  EmailAuth emailAuth =
+      new EmailAuth(sessionName: "My Switch Sign Up authentication");
+
+  void sendOtp() async {
+    bool result = await emailAuth.sendOtp(
+        recipientMail: emailController.value.text,
+        otpLength: 5,);
+  }
 
   bool _showPassword = false;
   void _togglevisibility() {
@@ -186,18 +200,22 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         borderRadius: BorderRadius.circular(100),
         color: const Color(0xff053275),
         child: ElevatedButton(
-          onPressed: () {},
+          onPressed: () {
+            sendOtp();
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => RegistrationScreen()));
+          },
           child: Icon(
             Icons.login_rounded,
             color: Colors.white,
             size: 30,
           ),
           style: ElevatedButton.styleFrom(
-            shape: CircleBorder(),
-            padding: EdgeInsets.all(20),
-            primary: const Color(0xff053275), // <-- Button color
-            onPrimary: Colors.yellow // <-- Splash color
-          ),
+              shape: CircleBorder(),
+              padding: EdgeInsets.all(20),
+              primary: const Color(0xff053275), // <-- Button color
+              onPrimary: Colors.yellow // <-- Splash color
+              ),
         ));
     return Scaffold(
         backgroundColor: Colors.black,
@@ -268,12 +286,16 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                               _togglevisibility2();
                             },
                             child: Icon(
-                              _showCheck ? Icons.check_box_outlined: Icons.check_box_outline_blank,
+                              _showCheck
+                                  ? Icons.check_box_outlined
+                                  : Icons.check_box_outline_blank,
                               size: 16,
                               color: Colors.white,
                             ),
                           ),
-                          Expanded(child: Text("By creating an account, you agree to our ",
+                          Expanded(
+                              child: Text(
+                            "By creating an account, you agree to our ",
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(
                               fontSize: 12,
@@ -291,7 +313,8 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                                   fontSize: 12,
                                 ),
                               ))
-                        ],),
+                        ],
+                      ),
                       SizedBox(
                         height: 11,
                       ),
@@ -308,7 +331,12 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                                 fontSize: 18,
                               )),
                           GestureDetector(
-                              onTap: () {},
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => LoginScreen()));
+                              },
                               child: Text(
                                 "Sign In",
                                 style: TextStyle(

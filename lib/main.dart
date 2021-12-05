@@ -28,7 +28,7 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: const AuthenticationScreen(),
+      home: const LoginScreen(),
     );
   }
 }
