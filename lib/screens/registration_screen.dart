@@ -1,8 +1,13 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:email_auth/email_auth.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:senior_year_project/model/user_model.dart';
+import 'package:senior_year_project/screens/home_screen.dart';
+import 'package:senior_year_project/screens/login_screen.dart';
 
-import './login_screen.dart';
-import './authentication_screen.dart';
+
 
 class RegistrationScreen extends StatefulWidget {
   const RegistrationScreen({Key? key}) : super(key: key);
@@ -22,13 +27,16 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   final TextEditingController repasswordController =
       new TextEditingController();
 
+  final _auth = FirebaseAuth.instance;
+
   EmailAuth emailAuth =
       new EmailAuth(sessionName: "My Switch Sign Up authentication");
 
   void sendOtp() async {
     bool result = await emailAuth.sendOtp(
-        recipientMail: emailController.value.text,
-        otpLength: 5,);
+      recipientMail: emailController.value.text,
+      otpLength: 5,
+    );
   }
 
   bool _showPassword = false;
@@ -58,7 +66,16 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     final usernameField = TextFormField(
         autofocus: false,
         controller: usernameController,
-        // validator: ,
+        validator: (value) {
+          RegExp regex = new RegExp(r'^.{3,}$');
+          if (value!.isEmpty) {
+            return ("Username cannot be empty");
+          }
+          if (!regex.hasMatch(value)) {
+            return ("Enter valid name {Min: 3 char}");
+          }
+          return null;
+        },
         onSaved: (value) {
           usernameController.text = value!;
         },
@@ -88,7 +105,17 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         autofocus: false,
         controller: emailController,
         keyboardType: TextInputType.emailAddress,
-        // validator: ,
+        validator: (value) {
+          if (value!.isEmpty) {
+            return ("Please enter your email");
+          }
+          // reg expression for email validation
+          if (!RegExp("^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+.[a-z]")
+              .hasMatch(value)) {
+            return ("Please enter a valid email");
+          }
+          return null;
+        },
         onSaved: (value) {
           emailController.text = value!;
         },
@@ -126,7 +153,16 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
           fontFamily: 'DMSans',
           color: Colors.white,
         ),
-        // validator: ,
+        validator: (value) {
+          RegExp regex = new RegExp(r'^.{6,}$');
+          if (value!.isEmpty) {
+            return ("Please enter your password");
+          }
+          if (!regex.hasMatch(value)) {
+            return ("Enter valid password {Min: 6 char}");
+          }
+          return null;
+        },
         onSaved: (value) {
           passwordController.text = value!;
         },
@@ -166,7 +202,13 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
           fontFamily: 'DMSans',
           color: Colors.white,
         ),
-        // validator: ,
+        validator: (value) {
+          RegExp regex = new RegExp(r'^.{6,}$');
+          if (passwordController.text != value) {
+            return "Passwords dont match";
+          }
+          return null;
+        },
         onSaved: (value) {
           repasswordController.text = value!;
         },
@@ -201,9 +243,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         color: const Color(0xff053275),
         child: ElevatedButton(
           onPressed: () {
-            sendOtp();
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => RegistrationScreen()));
+            signUp(emailController.text, passwordController.text);
           },
           child: Icon(
             Icons.login_rounded,
@@ -350,5 +390,43 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                     ])),
           ))),
         ));
+  }
+
+  void signUp(String email, String password) async {
+    if (_formKey.currentState!.validate()) {
+      if (!_showCheck) {
+        Fluttertoast.showToast(msg: "Please accept our terms & conditions");
+        return;
+      }
+      await _auth
+          .createUserWithEmailAndPassword(email: email, password: password)
+          .then((value) => {postDetailsToFirestore()})
+          .catchError((e) {
+        Fluttertoast.showToast(msg: e!.message);
+      });
+    }
+  }
+
+  postDetailsToFirestore() async {
+    //calling our firestore
+    FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
+    User? user = _auth.currentUser;
+    //calling our usermodel
+    UserModel userModel = UserModel();
+    //writing all the values
+    userModel.email = user!.email;
+    userModel.uid = user.uid;
+    userModel.username = usernameController.text;
+    //sending these values
+    await firebaseFirestore
+        .collection("users")
+        .doc(user.uid)
+        .set(userModel.toMap());
+    Fluttertoast.showToast(msg: "Account created successfully :)");
+
+    Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => HomeScreen()),
+        (route) => false);
   }
 }
